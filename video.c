@@ -7,8 +7,6 @@
 #include <dos.h>
 #include <stdlib.h>
 
-#define DOUBLE_BUFFER
-
 typedef unsigned char t_pixel;
 
 t_pixel far *vram = (unsigned char far *)0xA0000000L;
@@ -83,9 +81,10 @@ void video_clear(void)
 //------------------------------------------------------------------------------
 void video_swap(void)
 {
-	// wait for vertical retrace
-	//while ((inp(INPUT_STATUS_1) & VRETRACE));
-	//while (!(inp(INPUT_STATUS_1) & VRETRACE));
+#ifdef VSYNC
+	while ( (inp(INPUT_STATUS_1) & VRETRACE)) {}
+	while (!(inp(INPUT_STATUS_1) & VRETRACE)) {}
+#endif
 
 #ifdef DOUBLE_BUFFER
 	memmove(vram, frame_buffer, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(t_pixel));
