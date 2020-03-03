@@ -23,6 +23,7 @@
 void set_video_mode(unsigned char mode);
 void set_video_page(unsigned char page);
 void plot_pixel(unsigned int x, unsigned int y, unsigned char color);
+void plot_hline(unsigned int x, unsigned int y, unsigned int length, unsigned char color);
 void video_clear(void);
 void video_swap(void);
 

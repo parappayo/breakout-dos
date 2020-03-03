@@ -67,6 +67,19 @@ void plot_pixel(unsigned int x, unsigned int y, unsigned char color)
 }
 
 //------------------------------------------------------------------------------
+void plot_hline(unsigned int x, unsigned int y, unsigned int length, unsigned char color)
+{
+#ifdef DOUBLE_BUFFER
+	t_pixel far *target = frame_buffer;
+#else
+	t_pixel far *target = vram;
+#endif
+
+	target = target + ((y<<8)+(y<<6)) + x;
+	memset(target, color, length * sizeof(t_pixel));
+}
+
+//------------------------------------------------------------------------------
 void video_clear(void)
 {
 #ifdef DOUBLE_BUFFER
