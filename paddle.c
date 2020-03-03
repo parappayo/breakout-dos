@@ -26,13 +26,8 @@ void paddle_get_pos(int* x_out, int* y_out, int* width_out)
 //------------------------------------------------------------------------------
 void paddle_draw_color(int c)
 {
-	int x, y;
-
-	y = paddle_pos_y;
-	for (x = paddle_pos_x; x < paddle_pos_x + paddle_width; x++)
-	{
-		plot_pixel(x, y, c);
-	}
+	plot_hline(paddle_pos_x, paddle_pos_y, paddle_width, c);
+	plot_hline(paddle_pos_x, paddle_pos_y+1, paddle_width, c);
 }
 
 //------------------------------------------------------------------------------
