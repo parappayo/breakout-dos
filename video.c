@@ -7,27 +7,35 @@
 #include <dos.h>
 #include <stdlib.h>
 
+#define DOUBLE_BUFFER
+
 typedef unsigned char t_pixel;
 
 t_pixel far *vram = (unsigned char far *)0xA0000000L;
 
+#ifdef DOUBLE_BUFFER
 t_pixel far *frame_buffer = NULL;
+#endif
 
 //------------------------------------------------------------------------------
 void video_init(void)
 {
+#ifdef DOUBLE_BUFFER
 	if (frame_buffer != NULL)
 	{
 		farfree(frame_buffer);
 	}
 	frame_buffer = farmalloc(SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(t_pixel));
+#endif
 	video_clear();
 }
 
 //------------------------------------------------------------------------------
 void video_fin(void)
 {
+#ifdef DOUBLE_BUFFER
 	farfree(frame_buffer);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -51,14 +59,25 @@ void set_video_page(unsigned char page)
 //------------------------------------------------------------------------------
 void plot_pixel(unsigned int x, unsigned int y, unsigned char color)
 {
-	//vram[((y<<8)+(y<<6))+x] = color;
-	frame_buffer[((y<<8)+(y<<6))+x] = color;
+#ifdef DOUBLE_BUFFER
+	t_pixel far *target = frame_buffer;
+#else
+	t_pixel far *target = vram;
+#endif
+
+	target[((y<<8)+(y<<6))+x] = color;
 }
 
 //------------------------------------------------------------------------------
 void video_clear(void)
 {
-	memset(frame_buffer, 0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(t_pixel));
+#ifdef DOUBLE_BUFFER
+	t_pixel far *target = frame_buffer;
+#else
+	t_pixel far *target = vram;
+#endif
+
+	memset(target, 0, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(t_pixel));
 }
 
 //------------------------------------------------------------------------------
@@ -68,6 +87,7 @@ void video_swap(void)
 	//while ((inp(INPUT_STATUS_1) & VRETRACE));
 	//while (!(inp(INPUT_STATUS_1) & VRETRACE));
 
+#ifdef DOUBLE_BUFFER
 	memmove(vram, frame_buffer, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(t_pixel));
+#endif
 }
-
