@@ -100,6 +100,6 @@ void video_swap(void)
 #endif
 
 #ifdef DOUBLE_BUFFER
-	memmove(vram, frame_buffer, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(t_pixel));
+	memcpy(vram, frame_buffer, SCREEN_WIDTH * SCREEN_HEIGHT * sizeof(t_pixel));
 #endif
 }
