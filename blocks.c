@@ -64,6 +64,7 @@ void draw_block(int block_x, int block_y, int start_color, int end_color)
 	int c = start_color;
 
 	int start_x = block_x * block_width + block_field_x;
+	int end_x = start_x + block_width;
 
 	int start_y = block_y * block_height + block_field_y;
 	int end_y = start_y + block_height;
